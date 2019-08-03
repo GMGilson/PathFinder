@@ -40,6 +40,11 @@ public:
         return this->doors;
     }
 
+    bool isVisited()
+    {
+        return visited;
+    }
+
 
 private:
     int roomNumber;

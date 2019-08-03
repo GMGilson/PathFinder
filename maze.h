@@ -9,6 +9,10 @@
 #include <map>
 #include <string>
 #include "room.h"
+//#include "queue.h"
+//#include "stack.h"
+#include <iostream>
+#include <queue>
 
 class maze
 {
@@ -32,7 +36,7 @@ public:
 
     }
 
-    //adds room to maze
+    //adds roomPtr to maze
     void addRoom(int key, std::vector<int> flags)
     {
         auto r = new room(key , flags);
@@ -55,9 +59,40 @@ public:
 //
 //    //will solve the maze using DFS
 //    void solveDFS();
-//
-//    //will solve the maze using BFS
-//    void solveBFS();
+
+    //will solve the maze using BFS
+    std::vector<room*> solveBFS()
+    {
+        prepRooms();
+
+        std::vector<room*> path;
+
+        std::queue<std::vector<room*>> q;
+
+        getRooms()[0]->setVisited(true);
+        path.push_back(getRooms()[0]);
+        q.push(path);
+        while (!q.empty())
+        {
+            path = q.front();
+            q.pop();
+            auto last = path[path.size() -1];
+
+            if(last == getRooms()[getRooms().size() - 1])
+                return path;
+
+            for(auto &i : last->getAdjList())
+            {
+                if(!i->isVisited())
+                {
+                    i->setVisited(true);
+                    std::vector<room*> newPath(path);
+                    newPath.push_back(i);
+                    q.push(newPath);
+                }
+            }
+        }
+    }
 
     std::map<int, room *> &getRooms()
     {

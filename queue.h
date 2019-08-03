@@ -17,15 +17,18 @@ public:
     void enqueue(room* room)
     {
         node* temp = new node(room, nullptr);
-        getTail()->setNext(temp);
+        if(getTail()) // empty queue case
+            getTail()->setNext(temp);
         setTail(temp);
+        if(getHead() == nullptr)
+            setHead(temp); //empty queue case
         ++this->len;
     }
 
     room* dequeue()
     {
         auto node = getHead(); //grab the front of the queue
-        auto room = node->getRoom(); //get the room from that node
+        auto room = node->getRoom(); //get the roomPtr from that node
 
         setHead(getHead()->getNext()); // set the new head one past the original
         delete node; //delete old head

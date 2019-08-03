@@ -9,6 +9,6 @@ set(CMAKE_BUILD_TYPE Debug)
 
 add_executable(${PROJ}.out main.cpp room.h node.h queue.h stack.h maze.h)
 
-target_compile_options(${PROJ}.out PRIVATE -g -Wall -Wextra -Werror )
+target_compile_options(${PROJ}.out PRIVATE -g )#-Wall -Wextra -Werror )
 
 

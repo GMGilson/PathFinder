@@ -10,7 +10,7 @@
 class node
 {
 public:
-    node(room* room, node* next):room(room), next(next){};
+    node(room* room, node* next): roomPtr(room), next(next){};
 
     node *getNext()
     {
@@ -19,7 +19,7 @@ public:
 
     room *getRoom()
     {
-        return this->room;
+        return this->roomPtr;
     }
 
     void setNext(node *next)
@@ -29,7 +29,7 @@ public:
 
 
 private:
-    room* room;
+    room* roomPtr;
     node* next;
 };
 
