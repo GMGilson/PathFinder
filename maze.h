@@ -10,7 +10,7 @@
 #include <string>
 #include "room.h"
 //#include "queue.h"
-//#include "stack.h"
+#include "stack.h"
 #include <iostream>
 #include <queue>
 
@@ -56,9 +56,44 @@ public:
         auto iter = rooms.find(key);
         return iter == rooms.end();
     }
-//
-//    //will solve the maze using DFS
-//    void solveDFS();
+
+    //will solve the maze using DFS
+    std::vector<room*> solveDFS()
+    {
+
+        prepRooms();
+        std::vector<room*> path;
+
+        std::vector<std::vector<room*>> stack;
+
+        getRooms()[0]->setVisited(true);
+        path.push_back(getRooms()[0]);
+        stack.push_back(path);
+        while(!stack.empty())
+        {
+            path = stack.back();
+            stack.pop_back();
+            auto last = path[path.size() - 1 ];
+
+            if (last == getRooms()[getRooms().size() - 1])
+                return path;
+            for(auto &i : last->getAdjList())
+            {
+                if (!i->isVisited())
+                {
+                    i->setVisited(true);
+                    std::vector<room*> newPath(path);
+                    newPath.push_back(i);
+                    stack.push_back(newPath);
+
+                }
+            }
+
+        }
+        //this case should never happen but is required with -wall - wextra - werror compiler flags
+        std::vector<room*> fail;
+        return fail;
+    }
 
     //will solve the maze using BFS
     std::vector<room*> solveBFS()
@@ -92,7 +127,11 @@ public:
                 }
             }
         }
+        //this case should never happen but is necessary to compile with -Wall -Wextra -Werror
+        std::vector<room*> fail;
+        return fail;
     }
+
 
     std::map<int, room *> &getRooms()
     {

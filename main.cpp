@@ -61,6 +61,7 @@ int main(int argc, char** argv)
 
 
     Maze.solveBFS();
+    Maze.solveDFS();
 
     mazeFile.close();
     return 100;
