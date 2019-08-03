@@ -13,9 +13,9 @@
 class room
 {
 public:
-    room(std::vector<int> doors):doors(doors), visited(false){}
+    room(int number, std::vector<int> doors):roomNumber(number), doors(doors), visited(false){}
 
-    std::vector<room*> getAdjList()
+    std::vector<room*> &getAdjList()
     {
         return this->adjList;
     }
@@ -35,14 +35,18 @@ public:
         return false;
     }
 
-
-
+    std::vector<int> getDoors()
+    {
+        return this->doors;
+    }
 
 
 private:
+    int roomNumber;
     std::vector<room*> adjList;
-    bool visited;
     std::vector<int> doors;
+    bool visited;
+
 };
 
 

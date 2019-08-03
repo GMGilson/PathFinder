@@ -13,7 +13,6 @@
 class maze
 {
 public:
-    maze() = default;
 
     ~maze()
     {
@@ -23,32 +22,42 @@ public:
         }
     }
 
+    //sets the visited member to false for all rooms in the maze
     void prepRooms()
     {
+        for(auto &i : getRooms())
+        {
+            i.second->setVisited(false);
+        }
 
     }
 
+    //adds room to maze
     void addRoom(int key, std::vector<int> flags)
     {
-        auto r = new room(flags);
+        auto r = new room(key , flags);
         getRooms().insert({key, r});
     }
 
+    //establishes a one way link between two rooms
     void connectRooms(room* room1, room* room2)
     {
         room1->getAdjList().push_back(room2);
-        room2->getAdjList().push_back(room1);
+        //room2->getAdjList().push_back(room1);
     }
 
+    //checks to see a key already exists in the map
     bool keyExist(int key)
     {
         auto iter = rooms.find(key);
         return iter == rooms.end();
     }
-
-    void solveDFS();
-
-    void solveBFS();
+//
+//    //will solve the maze using DFS
+//    void solveDFS();
+//
+//    //will solve the maze using BFS
+//    void solveBFS();
 
     std::map<int, room *> &getRooms()
     {
