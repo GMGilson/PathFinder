@@ -13,6 +13,9 @@
 #include "stack.h"
 #include <iostream>
 #include <queue>
+#include <random>
+#include <ctime>
+
 
 class maze
 {
@@ -40,6 +43,12 @@ public:
     void addRoom(int key, std::vector<int> flags)
     {
         auto r = new room(key , flags);
+        getRooms().insert({key, r});
+    }
+
+    void addRoom(int key)
+    {
+        auto r = new room(key);
         getRooms().insert({key, r});
     }
 
@@ -139,8 +148,126 @@ public:
     }
 
 
+    //This will inspect the flags of each room
+    //Adding rooms to their respective adjacency list
+    //This function assumes that flags are properly assigned and
+    // that there is no mismatch between rooms and their adjacent room's flags
+    //ie room1 has an open north door but room2 which is above it does not have a corresponding south door open
+    void generateMaze(int N) 
+    {
+        ///i feel there should be a better way of doing this 8/1/2019
+        for (auto &j : this->getRooms())
+        {
+            //check north
+            if (!j.second->getDoors()[0])
+                if (j.first - N >= 0)// in case we are checking the top edge of the maze
+                    this->connectRooms(j.second, this->getRooms()[j.first - N]);
+
+            //check south
+            if (!j.second->getDoors()[1]) // in case we are checking the south edge of the maze
+                if (j.first + N < (N * N))
+                    this->connectRooms(j.second, this->getRooms()[j.first + N]);
+
+            //check east
+            if (!(j.second->getDoors()[2]))
+                this->connectRooms(j.second, this->getRooms()[j.first + 1]);
+
+            //check west
+            if (!j.second->getDoors()[3])
+                this->connectRooms(j.second, this->getRooms()[j.first - 1]);
+        }
+    }
+
+    //this function is only used for generating a random maze
+    //All rooms will have at least 2 connections and at most 4 connections
+    //Visual::
+    //    o-o-o-o
+    //    | | | |
+    //    o-o-o-o
+    //    | | | |
+    //    o-o-o-o
+    //    | | | |
+    //    o-o-o-o
+    //This does not represent which doORs are open
+    //Only links adjacent rooms together so we can randomly open doors later
+    void linkAdjRooms(int N)
+    {
+
+        //creates links between adjacent rooms for easier traversal for random graph generation
+        for (auto &i : this->getRooms()) {
+            ///holy fuck i hate this section
+            ///I really shot myself in the foot with this fucking class layout 8/4/2019
+            ///wHY DID I DECIDE THAT AN ARRAY OF FLAGS TO DENOTE THE WALLS WAS A GOOD IDEA 8/5/2019
+
+
+            //checks to see if we can link below
+            if (i.first + N < (N * N))
+                i.second->getAdjRooms().push_back(this->getRooms()[i.first + N]);
+
+            //checks to see if we can link above
+            if (i.first - N >= 0)
+                i.second->getAdjRooms().push_back(this->getRooms()[i.first - N]);
+
+            //checks to see if we can link left
+            if (i.first % N != 0)
+                i.second->getAdjRooms().push_back(this->getRooms()[i.first - 1]);
+
+            if (i.first % N != N - 1)
+                i.second->getAdjRooms().push_back(this->getRooms()[i.first + 1]);
+
+        }
+    }
+
+    bool isComplete()
+    {
+        ulong count = 1;
+        for( auto &i : getRooms())
+        {
+            if(i.second->isVisited())
+                ++count;
+
+        }
+        if(count == getRooms().size())
+            this->complete = true;
+
+        return this->complete;
+    }
+
+    void randRoomFlags(int N)
+    {
+        prepRooms();
+        std::srand(5);
+        this->getRooms()[0]->getDoors()[0] = 0; //creates "entry point" for the maze
+        this->getRooms()[this->getRooms().size() - 1]->getDoors()[3] = 0; //creates "exit point" for the maze
+
+        this->getRooms()[0]->setVisited(true);
+        std::vector<int> stack;
+        stack.push_back(0);
+        while (!isComplete())
+        {
+            auto i = stack.back();
+            int randAdj = rand() % getRooms()[i]->getAdjRooms().size();
+            if (!getRooms()[randAdj]->isVisited())
+            {
+                stack.push_back(getRooms().find(randAdj).operator*().first);
+
+
+            }
+
+        }
+
+    }
+
+    void opendoors(room* room1, room* room2)
+    {
+
+    }
+
+
+
 private:
     std::map<int, room* > rooms;
+    bool complete;
 };
 
 

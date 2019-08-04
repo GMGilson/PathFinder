@@ -15,6 +15,8 @@ class room
 public:
     room(int number, std::vector<int> doors):roomNumber(number), doors(doors), visited(false){}
 
+    explicit room(int number):roomNumber(number), visited(false){};
+
     std::vector<room*> &getAdjList()
     {
         return this->adjList;
@@ -35,7 +37,7 @@ public:
         return false;
     }
 
-    std::vector<int> getDoors()
+    std::vector<int> &getDoors()
     {
         return this->doors;
     }
@@ -45,12 +47,18 @@ public:
         return visited;
     }
 
+    std::vector<room*> &getAdjRooms()
+    {
+        return this->adjRooms;
+    }
+
 
 private:
     int roomNumber;
-    std::vector<room*> adjList;
-    std::vector<int> doors;
-    bool visited;
+    std::vector<room*> adjList; // list of adj rooms that have an open door with the current room
+    std::vector<int> doors; //an array of flags to denote which doors are open {N, S, E, W}
+    bool visited{};
+    std::vector<room*> adjRooms; //list of rooms directly adj to the current room
 
 };
 

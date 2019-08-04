@@ -10,59 +10,64 @@
 
 int main(int argc, char** argv)
 {
-    if(argc != 2)
+    if(argc == 2)
+    {
+        std::fstream mazeFile;
+        mazeFile.open(argv[1]);
+
+        maze Maze = maze();
+        int key = 0;
+        int N;
+        mazeFile >> N; //stores the size of the maze
+
+        for (int k = 0; k < (N * N); ++k) {
+            std::vector<int> flags;
+            for (int i = 0; i < 4; ++i) {
+                int temp;
+                mazeFile >> temp;
+                flags.push_back(temp);
+            }
+            Maze.addRoom(key, flags);
+
+            key++;
+        }
+
+        Maze.generateMaze(N);
+
+        Maze.solveBFS();
+        Maze.solveDFS();
+
+        mazeFile.close();
+    }
+
+    if(argc > 2)
     {
         std::cout << "invalid arguments";
         return 69;
     }
-
-    std::fstream mazeFile;
-    mazeFile.open(argv[1]);
-
-    maze Maze = maze();
-    int key = 0;
-    int N;
-    mazeFile >> N; //stores the size of the maze
-
-    for (int k = 0; k <(N*N) ; ++k)
+    else
     {
-        std::vector<int> flags;
-        for (int i = 0; i < 4; ++i)
+        //generate graph with closed doors
+        int N;
+        std::cout << "Input maze size" << std::endl;
+        std::cin >> N;
+        maze Maze = maze();
+        for (int i = 0; i < (N * N) ; ++i)
         {
-            int temp;
-            mazeFile >> temp;
-            flags.push_back(temp);
+            std::vector<int> flags = {1,1,1,1};
+            Maze.addRoom(i, flags);
         }
-        Maze.addRoom(key, flags);
+        Maze.prepRooms();
+        Maze.linkAdjRooms(N);
 
-        key++;
+
+
+
+
+
+
     }
-
-    for(auto &j : Maze.getRooms())
-    {
-        //check north
-        if(!j.second->getDoors()[0])
-            if(j.first - N >= 0)// in case we are checking the top edge of the maze
-                Maze.connectRooms(j.second, Maze.getRooms()[j.first - N]);
-
-        //check south
-        if(!j.second->getDoors()[1]) // in case we are checking the south edge of the maze
-            if(j.first + N < (N * N))
-                Maze.connectRooms(j.second, Maze.getRooms()[j.first + N]);
-
-        //check east
-        if(!(j.second->getDoors()[2]))
-            Maze.connectRooms(j.second, Maze.getRooms()[j.first + 1]);
-
-        //check west
-        if(!j.second->getDoors()[3])
-            Maze.connectRooms(j.second, Maze.getRooms()[j.first - 1]);
-    }
-
-
-    Maze.solveBFS();
-    Maze.solveDFS();
-
-    mazeFile.close();
     return 100;
 }
+
+
