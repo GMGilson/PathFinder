@@ -64,6 +64,8 @@ int main(int argc, char** argv)
         //Maze.getRooms()[0]->isUnvisitedAdjCells();
 
         Maze.randRoomFlags();
+        Maze.generateMaze(N);
+
 
     }
     return 100;

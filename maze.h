@@ -46,11 +46,6 @@ public:
         getRooms().insert({key, r});
     }
 
-    void addRoom(int key)
-    {
-        auto r = new room(key);
-        getRooms().insert({key, r});
-    }
 
     //establishes a one way link between two rooms
     void connectRooms(room* room1, room* room2)
@@ -59,12 +54,6 @@ public:
         //room2->getAdjList().push_back(room1);
     }
 
-    //checks to see a key already exists in the map
-    bool keyExist(int key)
-    {
-        auto iter = rooms.find(key);
-        return iter == rooms.end();
-    }
 
     //will solve the maze using DFS
     std::vector<room*> solveDFS()
