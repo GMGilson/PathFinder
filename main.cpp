@@ -40,7 +40,7 @@ int main(int argc, char** argv)
         mazeFile.close();
     }
 
-    if(argc > 2)
+    else if(argc > 2)
     {
         std::cout << "invalid arguments";
         return 69;
@@ -61,10 +61,9 @@ int main(int argc, char** argv)
         Maze.linkAdjRooms(N);
 
 
+        //Maze.getRooms()[0]->isUnvisitedAdjCells();
 
-
-
-
+        Maze.randRoomFlags();
 
     }
     return 100;

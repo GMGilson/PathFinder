@@ -10,9 +10,14 @@
 #include <vector>
 
 
+
+
 class room
 {
 public:
+
+    using directedRoom = std::pair<char, room*> ;
+
     room(int number, std::vector<int> doors):roomNumber(number), doors(doors), visited(false){}
 
     explicit room(int number):roomNumber(number), visited(false){};
@@ -47,18 +52,36 @@ public:
         return visited;
     }
 
-    std::vector<room*> &getAdjRooms()
+    std::vector<directedRoom*> &getAdjRooms()
     {
         return this->adjRooms;
     }
 
+    //returns true if all cells adjacent to room are visited
+    bool isUnvisitedAdjCells()
+    {
+        ulong count = 0;
+        for(auto &i : this->adjRooms)
+        {
+            if(i->second->isVisited())
+                count++;
+        }
+        if(adjRooms.empty())
+            return true;
 
+        return count == this->adjRooms.size();
+    }
+
+    int getRoomNumber()
+    {
+        return this->roomNumber;
+    }
 private:
     int roomNumber;
     std::vector<room*> adjList; // list of adj rooms that have an open door with the current room
     std::vector<int> doors; //an array of flags to denote which doors are open {N, S, E, W}
     bool visited{};
-    std::vector<room*> adjRooms; //list of rooms directly adj to the current room
+    std::vector<directedRoom*> adjRooms; //list of rooms directly adj to the current room
 
 };
 

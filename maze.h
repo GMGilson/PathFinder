@@ -14,7 +14,7 @@
 #include <iostream>
 #include <queue>
 #include <random>
-#include <ctime>
+#include <time.h>
 
 
 class maze
@@ -188,13 +188,14 @@ public:
     //    o-o-o-o
     //    | | | |
     //    o-o-o-o
-    //This does not represent which doORs are open
+    //This does not represent which doors are open
     //Only links adjacent rooms together so we can randomly open doors later
     void linkAdjRooms(int N)
     {
 
         //creates links between adjacent rooms for easier traversal for random graph generation
-        for (auto &i : this->getRooms()) {
+        for (auto &i : this->getRooms())
+        {
             ///holy fuck i hate this section
             ///I really shot myself in the foot with this fucking class layout 8/4/2019
             ///wHY DID I DECIDE THAT AN ARRAY OF FLAGS TO DENOTE THE WALLS WAS A GOOD IDEA 8/5/2019
@@ -202,25 +203,42 @@ public:
 
             //checks to see if we can link below
             if (i.first + N < (N * N))
-                i.second->getAdjRooms().push_back(this->getRooms()[i.first + N]);
-
+            {
+                room::directedRoom* temp = new room::directedRoom;
+                temp->first = 's';
+                temp->second = getRooms()[i.first + N];
+                i.second->getAdjRooms().push_back(temp);
+            }
             //checks to see if we can link above
             if (i.first - N >= 0)
-                i.second->getAdjRooms().push_back(this->getRooms()[i.first - N]);
-
+            {
+                room::directedRoom* temp = new room::directedRoom;
+                temp->first = 'n';
+                temp->second = this->getRooms()[i.first - N];
+                i.second->getAdjRooms().push_back(temp);
+            }
             //checks to see if we can link left
             if (i.first % N != 0)
-                i.second->getAdjRooms().push_back(this->getRooms()[i.first - 1]);
-
+            {
+                room::directedRoom* temp = new room::directedRoom;
+                temp->first = 'w';
+                temp->second = this->getRooms()[i.first - 1];
+                i.second->getAdjRooms().push_back(temp);
+            }
+            //checks to see if we can link right
             if (i.first % N != N - 1)
-                i.second->getAdjRooms().push_back(this->getRooms()[i.first + 1]);
-
+            {
+                room::directedRoom* temp = new room::directedRoom;
+                temp->first = 'e';
+                temp->second = this->getRooms()[i.first + 1];
+                i.second->getAdjRooms().push_back(temp);
+            }
         }
     }
 
     bool isComplete()
     {
-        ulong count = 1;
+        ulong count = 0;
         for( auto &i : getRooms())
         {
             if(i.second->isVisited())
@@ -233,35 +251,69 @@ public:
         return this->complete;
     }
 
-    void randRoomFlags(int N)
+    void randRoomFlags()
     {
         prepRooms();
-        std::srand(5);
+        std::srand(7);
         this->getRooms()[0]->getDoors()[0] = 0; //creates "entry point" for the maze
         this->getRooms()[this->getRooms().size() - 1]->getDoors()[3] = 0; //creates "exit point" for the maze
 
-        this->getRooms()[0]->setVisited(true);
+        this->getRooms()[0]->setVisited(true); //mark initial cell
         std::vector<int> stack;
-        stack.push_back(0);
+        auto curCell = 0;
+
         while (!isComplete())
         {
-            auto i = stack.back();
-            int randAdj = rand() % getRooms()[i]->getAdjRooms().size();
-            if (!getRooms()[randAdj]->isVisited())
-            {
-                stack.push_back(getRooms().find(randAdj).operator*().first);
 
+            if (!this->getRooms()[curCell]->isUnvisitedAdjCells())
+            {
+                std::vector<room::directedRoom*> unvisitedRooms;
+                for(auto &i : getRooms()[curCell]->getAdjRooms())
+                    if (!i->second->isVisited())
+                        unvisitedRooms.push_back(i);
+                auto randAdjCell = rand() % unvisitedRooms.size();
+                stack.push_back(curCell);
+                opendoors(getRooms()[curCell], unvisitedRooms[randAdjCell]);
+                curCell = unvisitedRooms[randAdjCell]->second->getRoomNumber();
+                getRooms()[curCell]->setVisited(true);
 
             }
+            else if (!stack.empty())
+            {
+                curCell = stack.back();
+                stack.pop_back();
 
+            }
         }
 
+
     }
 
-    void opendoors(room* room1, room* room2)
+    void opendoors( room* room1, room::directedRoom * room2)
     {
+        switch (room2->first)
+        {
+            case  's':
+                room1->getDoors()[1] = 0;
+                room2->second->getDoors()[0] = 0;
+                break;
 
+            case 'n':
+                room1->getDoors()[0] = 0;
+                room2->second->getDoors()[1] = 0;
+                break;
+            case 'e':
+                room1->getDoors()[2] = 0;
+                room2->second->getDoors()[3] = 0;
+                break;
+            case 'w':
+                room1->getDoors()[3] = 0;
+                room2->second->getDoors()[2] = 0;
+                break;
+        }
     }
+
+
 
 
 
