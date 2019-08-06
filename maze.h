@@ -225,6 +225,8 @@ public:
         }
     }
 
+    //returns true if there are either no adjRooms left to check
+    //or all adj rooms have been visited
     bool isComplete()
     {
         ulong count = 0;
@@ -240,12 +242,16 @@ public:
         return this->complete;
     }
 
+    //using a random dfs() pattern
+    //randomly generate a path to the exit
+    //and traverse all other rooms opening doors between rooms
+    //this one is a little messy
     void randRoomFlags()
     {
         prepRooms();
-        std::srand(7);
+        std::srand(time(nullptr));
         this->getRooms()[0]->getDoors()[0] = 0; //creates "entry point" for the maze
-        this->getRooms()[this->getRooms().size() - 1]->getDoors()[3] = 0; //creates "exit point" for the maze
+        this->getRooms()[this->getRooms().size() - 1]->getDoors()[1] = 0; //creates "exit point" for the maze
 
         this->getRooms()[0]->setVisited(true); //mark initial cell
         std::vector<int> stack;
@@ -278,6 +284,9 @@ public:
 
     }
 
+
+    //for any two adjacent rooms selected by randRoomFlags()
+    //it will dissolve the door between the two rooms based on room2's directional flag
     void opendoors( room* room1, room::directedRoom * room2)
     {
         switch (room2->first)
@@ -302,7 +311,66 @@ public:
         }
     }
 
+    //prints a ascii representation of the maze
+    void printMaze(int N)
+    {
+        std::cout << "   ";
+        for (int i = 0; i < N - 1; ++i)
+        {
+            std::cout << "_ ";
+        }
+        //std::cout << std::endl;
 
+        for( auto &i : getRooms())
+        {
+            if(i.first % N == 0)
+            {
+                std::cout << std::endl;
+            }
+            if (i.second->getDoors()[3] == 1)
+            {
+                std::cout << '|';
+            }
+            else
+                std::cout << ' ';
+
+            if (i.second->getDoors()[1] == 1)
+            {
+                std::cout << "_";
+            }
+
+            else
+                std::cout << " ";
+
+            if((i.first + 1) % N == 0)
+                std::cout << '|';
+
+        }
+        std::cout << std::endl;
+    }
+
+    void printPath(std::vector<room*> path, int N)
+    {
+        for(auto &i : path)
+        {
+            i->setPathFlag();
+        }
+
+        for(auto &i : getRooms())
+        {
+            if(i.first % N == 0)
+            {
+                std::cout << std::endl;
+            }
+            if(i.second->getPathFlag() == 'x')
+            {
+                std::cout << " x";
+            }
+            else
+                std::cout << "  ";
+        }
+        std::cout << std::endl;
+    }
 
 
 

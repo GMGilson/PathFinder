@@ -18,9 +18,15 @@ public:
 
     using directedRoom = std::pair<char, room*> ;
 
-    room(int number, std::vector<int> doors):roomNumber(number), doors(doors), visited(false){}
+    room(int number, std::vector<int> doors):roomNumber(number), doors(doors), visited(false), pathFlag('\0'){}
 
     explicit room(int number):roomNumber(number), visited(false){};
+
+    ~room()
+    {
+        for(auto &i : getAdjRooms())
+            delete i;
+    }
 
     std::vector<room*> &getAdjList()
     {
@@ -76,12 +82,24 @@ public:
     {
         return this->roomNumber;
     }
+
+    void setPathFlag()
+    {
+        this->pathFlag = 'x';
+    }
+
+    char getPathFlag()
+    {
+        return this->pathFlag;
+    }
+
 private:
     int roomNumber;
     std::vector<room*> adjList; // list of adj rooms that have an open door with the current room
     std::vector<int> doors; //an array of flags to denote which doors are open {N, S, E, W}
     bool visited{};
     std::vector<directedRoom*> adjRooms; //list of rooms directly adj to the current room
+    char pathFlag; //flag that marks if this rooms is in the solved path
 
 };
 
