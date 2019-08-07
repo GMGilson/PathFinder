@@ -7,7 +7,7 @@ project(${PROJ} LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Debug)
 
-add_executable(${PROJ}.out main.cpp room.h node.h queue.h stack.h maze.h linkedList.h)
+add_executable(${PROJ}.out main.cpp room.h maze.h)
 
 target_compile_options(${PROJ}.out PRIVATE -g -Wall -Wextra -Werror )
 

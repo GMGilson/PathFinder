@@ -35,20 +35,32 @@ int main(int argc, char** argv)
         Maze.generateMaze(N);
 
         Maze.printMaze(N);
+        std::cout << std::endl;
 
+        std::cout << "Rooms visited by BFS" << std::endl;
         auto bfsPath = Maze.solveBFS();
-        auto dfsPath = Maze.solveDFS();
+        std::cout << std::endl;
+
+        std::cout << "Path determined by BFS" << std::endl;
+        for(auto &i : bfsPath)
+            std::cout << i->getRoomNumber() << " ";
 
         Maze.printPath(bfsPath, N);
+        std::cout << std::endl;
+
+        std::cout << "Rooms visited by DFS" << std::endl;
+        auto dfsPath = Maze.solveDFS();
+        std::cout << std::endl;
+
         std::cout << "Path determined by DFS" << std::endl;
         for(auto &i : dfsPath)
             std::cout << i->getRoomNumber() << " ";
         Maze.printPath(dfsPath , N);
 
-        std::cout << "Path determined by BFS" << std::endl;
-        for(auto &i : dfsPath)
-            std::cout << i->getRoomNumber() << " ";
-        Maze.printPath(bfsPath, N);
+
+
+
+
 
         mazeFile.close();
     }
@@ -72,27 +84,29 @@ int main(int argc, char** argv)
         }
         Maze.prepRooms();
         Maze.linkAdjRooms(N);
-
-
-        //Maze.getRooms()[0]->isUnvisitedAdjCells();
-
         Maze.randRoomFlags();
         Maze.generateMaze(N);
-
-        auto dfsPath = Maze.solveDFS();
-        auto bfsPath = Maze.solveBFS();
-
         Maze.printMaze(N);
+
+        std::cout << "Rooms visited by BFS" << std::endl;
+        auto bfsPath = Maze.solveBFS();
+        std::cout << std::endl;
+
+        std::cout << "Path determined by BFS" << std::endl;
+        for(auto &i : bfsPath)
+            std::cout << i->getRoomNumber() << " ";
+
+        Maze.printPath(bfsPath, N);
+        std::cout << std::endl;
+
+        std::cout << "Rooms visited by DFS" << std::endl;
+        auto dfsPath = Maze.solveDFS();
+        std::cout << std::endl;
+
         std::cout << "Path determined by DFS" << std::endl;
         for(auto &i : dfsPath)
             std::cout << i->getRoomNumber() << " ";
         Maze.printPath(dfsPath , N);
-
-        std::cout << "Path determined by BFS" << std::endl;
-        for(auto &i : dfsPath)
-            std::cout << i->getRoomNumber() << " ";
-        Maze.printPath(bfsPath, N);
-
     }
     return 100;
 }

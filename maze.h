@@ -9,8 +9,6 @@
 #include <map>
 #include <string>
 #include "room.h"
-//#include "queue.h"
-#include "stack.h"
 #include <iostream>
 #include <queue>
 #include <random>
@@ -65,6 +63,7 @@ public:
         std::vector<std::vector<room*>> stack;
 
         getRooms()[0]->setVisited(true);
+        std::cout << getRooms()[0]->getRoomNumber() << " ";
         path.push_back(getRooms()[0]);
         stack.push_back(path);
         while(!stack.empty())
@@ -80,6 +79,7 @@ public:
                 if (!i->isVisited())
                 {
                     i->setVisited(true);
+                    std::cout << i->getRoomNumber() << ' ';
                     std::vector<room*> newPath(path);
                     newPath.push_back(i);
                     stack.push_back(newPath);
@@ -93,6 +93,7 @@ public:
         return fail;
     }
 
+
     //will solve the maze using BFS
     std::vector<room*> solveBFS()
     {
@@ -103,6 +104,7 @@ public:
         std::queue<std::vector<room*>> q;
 
         getRooms()[0]->setVisited(true);
+        std::cout << getRooms()[0]->getRoomNumber() << ' ';
         path.push_back(getRooms()[0]);
         q.push(path);
         while (!q.empty())
@@ -119,10 +121,12 @@ public:
                 if(!i->isVisited())
                 {
                     i->setVisited(true);
+                    std::cout << i->getRoomNumber() << ' ';
                     std::vector<room*> newPath(path);
                     newPath.push_back(i);
                     q.push(newPath);
                 }
+
             }
         }
         //this case should never happen but is necessary to compile with -Wall -Wextra -Werror
