@@ -33,3 +33,5 @@ While (S.find(0) != S.find(N - 1)):
 
 * After a maze is generated, we want to solve it using bot Depth First Search and Breadth First Search.
 *  We will then print out the path taken to solve the maze and the rooms visited by each algorithm to compare.
+
+![](assets/Showcase.png)
